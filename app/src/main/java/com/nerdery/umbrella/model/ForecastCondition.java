@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * Represents a forecast weather condition returned from Weather Underground
- *
+ * <p>
  * Does not include all available only data- only potentially useful fields are included
  *
  * @author bherbst
@@ -39,4 +39,10 @@ public class ForecastCondition {
      * The temperature that is forecast (in degrees Celsius)
      */
     public float tempCelsius;
+    /**
+     * The current hour in 24 hour format
+     */
+
+    public int hour;
+    public String day;
 }
