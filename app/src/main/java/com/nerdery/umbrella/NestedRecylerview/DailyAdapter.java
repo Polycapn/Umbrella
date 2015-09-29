@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.nerdery.umbrella.R;
 import com.nerdery.umbrella.model.ForecastCondition;
 import com.nerdery.umbrella.widget.DynamicGridLayoutManager;
+import com.poliveira.parallaxrecyclerview.ParallaxRecyclerAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -59,13 +60,17 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.DailyViewHol
      * <p>
      * always gets at most 8 hours out of every day to pass to the hourly grid
      */
+
     @Override
     public void onBindViewHolder(DailyViewHolder holder, int position) {
+
         if (hourlyConditions.size() > (currentIndex)) {
             ForecastCondition hourCondition = hourlyConditions.get(currentIndex);
             holder.day.setText(hourCondition.day);
             int hld = 24 - hourCondition.hour;
             hld = (hld < 8) ? (24 - hourCondition.hour) : 8;
+
+            Log.v(TAG,"");
 
             List<ForecastCondition> dayBlock = new ArrayList<>();
 
@@ -76,7 +81,7 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.DailyViewHol
 
         Log.v(TAG,"day = "+hourlyConditions.get(position).day);
             if (dayBlock.size() > 0) {
-                holder.forecastBlock.setLayoutManager(new  DynamicGridLayoutManager(context, 4));
+                holder.forecastBlock.setLayoutManager(new DynamicGridLayoutManager(context, 4));
                 HourlyAdapter adapter = new HourlyAdapter(dayBlock);
                 holder.forecastBlock.setAdapter(adapter);
             }

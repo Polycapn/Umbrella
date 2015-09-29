@@ -1,53 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CollapsingToolbarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/collapsing_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/header"
-    android:background="@color/primaryColor"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    app:contentScrim="?attr/colorPrimary"
+    app:expandedTitleMarginEnd="64dp"
+    app:expandedTitleMarginStart="48dp"
+    app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/display_location_full"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="top"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="Minneapolis, MN"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            app:layout_collapseMode="parallax" />
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/toolbar"
+            app:layout_scrollFlags="scroll|enterAlways" />
 
-        <TextView
-            android:id="@+id/temp"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:text="11"
-            android:textColor="@color/white"
-            android:textSize="80sp"
-            app:layout_collapseMode="parallax" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/weather"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="7dp"
-            android:text="Clear"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            app:layout_collapseMode="parallax" />
+            <TextView
+                android:id="@+id/display_location_full"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="top"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="Minneapolis, MN"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_collapseMode="parallax" />
+
+            <TextView
+                android:id="@+id/temp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="11"
+                android:textColor="@color/white"
+                android:textSize="80sp"
+                app:layout_collapseMode="parallax" />
+
+            <TextView
+                android:id="@+id/weather"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="Clear"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_collapseMode="parallax" />
+        </LinearLayout>
+
+
     </LinearLayout>
-
-
-</LinearLayout>
+</android.support.design.widget.CollapsingToolbarLayout>

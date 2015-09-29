@@ -25,13 +25,13 @@ import com.nerdery.umbrella.model.ForecastCondition;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements IMainView{
+public class MainActivity extends AppCompatActivity implements IMainView {
 
     RecyclerView recyclerView;
     WeatherPresenter presenter;
     CurrentPresenter mCurrentPresenter;
     LinearLayout header;
-     Toolbar toolbar;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +43,12 @@ public class MainActivity extends AppCompatActivity implements IMainView{
         presenter = new WeatherPresenter(this);
         mCurrentPresenter = new CurrentPresenter(this);
 
-        toolbar= (Toolbar) findViewById(R.id.app_bar);
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
 
 
-
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements IMainView{
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void displayData(CurrentConditions currentConditions) {
         setCurrentConditionsView(currentConditions);
@@ -102,15 +101,14 @@ public class MainActivity extends AppCompatActivity implements IMainView{
 
     private void setCurrentConditionsView(CurrentConditions currentConditions) {
         int basetemp = 60;
-        RelativeLayout lLayout;
-        TextView displayLocation =(TextView) findViewById(R.id.display_location_full);
+        TextView displayLocation = (TextView) findViewById(R.id.display_location_full);
         TextView tempf = (TextView) findViewById(R.id.temp);
         TextView weather = (TextView) findViewById(R.id.weather);
 
         displayLocation.setText(currentConditions.getCurrentObservation().getDisplayLocation().getFull());
         tempf.setText(String.valueOf(currentConditions.getCurrentObservation().getTempF()));
         weather.setText(currentConditions.getCurrentObservation().getWeather());
-        if (currentConditions.getCurrentObservation().getTempF() > basetemp){
+        if (currentConditions.getCurrentObservation().getTempF() > basetemp) {
 
             header = (LinearLayout) findViewById(R.id.condition);
             header.setBackgroundColor(getResources().getColor(R.color.weather_warm));
