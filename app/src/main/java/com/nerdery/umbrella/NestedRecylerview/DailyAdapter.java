@@ -21,17 +21,17 @@ import java.util.List;
  * Created by Polycap on 9/27/2015.
  */
 public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.DailyViewHolder> {
-    private static final String CLEAR = "clear";
+    private static final String CLEAR = "Clear";
     private static final String IconEndpoint = "http://nerdery-umbrella.s3.amazonaws.com/";
 
-    private static final String CLOUDY = "cloudy";
-    private static final String PARTLYSUNNY = "partlysunny";
-    private static final String PARTLYCLOUDY = "partlycloudy";
-    private static final String MOSTLYCLOUDY = "mostlycloudy";
-    private static final String HAZY = "hazy";
-    private static final String RAIN = "rain";
-    private static final String SUNNY = "sunny";
-    private static final String SNOW = "snow";
+    private static final String CLOUDY = "Cloudy";
+    private static final String PARTLYSUNNY = "Partly Sunny";
+    private static final String PARTLYCLOUDY = "Partly Cloudy";
+    private static final String MOSTLYCLOUDY = "Mostly Cloudy";
+    private static final String HAZY = "Hazy";
+    private static final String RAIN = "Rain";
+    private static final String SUNNY = "Runny";
+    private static final String SNOW = "Snow";
 
 
     private static final String TAG = DailyAdapter.class.getSimpleName();
@@ -74,7 +74,7 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.DailyViewHol
                     dayBlock.add(hourlyConditions.get(currentIndex + i));
             }
 
-//        Log.v(TAG,"day = "+hourlyConditions.get(position).);
+        Log.v(TAG,"day = "+hourlyConditions.get(position).day);
             if (dayBlock.size() > 0) {
                 holder.forecastBlock.setLayoutManager(new  DynamicGridLayoutManager(context, 4));
                 HourlyAdapter adapter = new HourlyAdapter(dayBlock);
@@ -120,6 +120,7 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.DailyViewHol
             holder.temp.setText("" + (int) dayBlock.get(position).tempFahrenheit);
             holder.timeofday.setText(dayBlock.get(position).displayTime);
             String mCondition = dayBlock.get(position).condition;
+            Log.v(TAG, "Condition: "+mCondition);
 
             switch (mCondition) {
                 case CLEAR:
@@ -129,7 +130,6 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.DailyViewHol
                 case CLOUDY:
                     Picasso.with(context).load(IconEndpoint + "cloudy.png").placeholder(R.drawable.cloudy)
                             .into(holder.weatherIcon);
-                    Log.v(TAG, "Icon received");
                     break;
                 case PARTLYCLOUDY:
                     Picasso.with(context).load(IconEndpoint + "partlycloudy.png").placeholder(R.drawable.partlycloudy)

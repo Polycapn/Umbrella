@@ -37,6 +37,8 @@ public class ForecastParser implements JsonDeserializer<ForecastCondition> {
         condition.displayTime = fcttime.get("civil").getAsString();
         long epochSeconds = fcttime.get("epoch").getAsLong();
         condition.time = new Date(epochSeconds * 1000);
+        condition.hour = fcttime.get("hour").getAsInt();
+        condition.day = fcttime.get("weekday_name").getAsString();
 
         return condition;
     }

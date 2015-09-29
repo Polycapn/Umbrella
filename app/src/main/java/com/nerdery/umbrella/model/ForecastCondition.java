@@ -44,5 +44,6 @@ public class ForecastCondition {
      */
 
     public int hour;
+
     public String day;
 }

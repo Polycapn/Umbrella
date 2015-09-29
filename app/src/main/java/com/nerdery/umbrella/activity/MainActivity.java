@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,30 +30,31 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     RecyclerView recyclerView;
     WeatherPresenter presenter;
     CurrentPresenter mCurrentPresenter;
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
-
+    LinearLayout header;
+     Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         presenter = new WeatherPresenter(this);
         mCurrentPresenter = new CurrentPresenter(this);
 
-
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        toolbar= (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
-        CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle("temp");
+
+
 
     }
     @Override
     protected void onResume() {
         super.onResume();
         presenter.getWeather();
+        mCurrentPresenter.getData();
+
     }
 
     public void setList(List<ForecastCondition> hourlyConditions) {
@@ -110,12 +112,15 @@ public class MainActivity extends AppCompatActivity implements IMainView{
         weather.setText(currentConditions.getCurrentObservation().getWeather());
         if (currentConditions.getCurrentObservation().getTempF() > basetemp){
 
-            mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-            mCollapsingToolbarLayout.setBackgroundColor(getResources().getColor(R.color.weather_warm));
+            header = (LinearLayout) findViewById(R.id.condition);
+            header.setBackgroundColor(getResources().getColor(R.color.weather_warm));
+            toolbar.setBackgroundColor(getResources().getColor(R.color.weather_warm));
 
         } else {
-            mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-            mCollapsingToolbarLayout.setBackgroundColor(getResources().getColor(R.color.weather_cool));
+            header = (LinearLayout) findViewById(R.id.condition);
+            header.setBackgroundColor(getResources().getColor(R.color.weather_cool));
+            toolbar.setBackgroundColor(getResources().getColor(R.color.weather_cool));
+
 
         }
 
