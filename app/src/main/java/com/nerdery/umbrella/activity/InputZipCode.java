@@ -1,5 +1,6 @@
 package com.nerdery.umbrella.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -14,7 +15,6 @@ import android.widget.EditText;
 import com.nerdery.umbrella.Conditions.model.CurrentConditions;
 import com.nerdery.umbrella.Conditions.presenter.CurrentPresenter;
 import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
-import com.nerdery.umbrella.Conditions.view.IMainView;
 import com.nerdery.umbrella.R;
 
 /**
@@ -28,6 +28,10 @@ public class InputZipCode extends DialogFragment  {
     UmbrellaApp getContext;
     CurrentPresenter mCurrentPresenter;
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -41,18 +45,9 @@ public class InputZipCode extends DialogFragment  {
                 // Add action buttons
                 .setPositiveButton(R.string.enter, (dialog, id) -> {
 
-                    sZipcode = getActivity().getSharedPreferences("ZipCode", Context.MODE_PRIVATE);
-//                    editZipCode.getText();
-
-                    SharedPreferences sharedPreferences = PreferenceManager
-                            .getDefaultSharedPreferences(getContext);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("ZipCode", "");
-                    editor.apply();
-//                    PreferenceManager.getDefaultSharedPreferences(getContext).edit().putString("ZipCode", "ZipCode").commit();
-//
-                    String UserZipCode = PreferenceManager.getDefaultSharedPreferences(getContext).getString("ZipCode", "");
-                    mCurrentPresenter.getData(UserZipCode);
+                    String usersZipcode = editZipCode.getText().toString();
+                    sZipcode = this.getActivity().getSharedPreferences(usersZipcode, Context.MODE_PRIVATE);
+                    mCurrentPresenter.getData(usersZipcode);
 
                 });
         return builder.create();

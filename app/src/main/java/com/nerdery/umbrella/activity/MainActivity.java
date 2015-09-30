@@ -1,19 +1,13 @@
 package com.nerdery.umbrella.activity;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -54,17 +48,13 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Boolean isFirstRun = getSharedPreferences("Zipcode", MODE_PRIVATE)
-                .getBoolean("isfirstrun", true);
-
-        if (isFirstRun) {
-//            launch dialogbox and get zipcode
-            InputZipCode inputZipCode = new InputZipCode();
-            inputZipCode.show(getFragmentManager(), "dialog fragment");
-            inputZipCode.setCancelable(false);
-        }
-
         setContentView(R.layout.activity_main);
+
+
+
+
+        getUserZipcode();
+
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         presenter = new WeatherPresenter(this);
@@ -75,11 +65,41 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     }
 
+    private void getUserZipcode() {
+        final TextView mZipCodeEditText = new EditText(this);
+        mZipCodeEditText.setInputType(InputType.TYPE_CLASS_PHONE);
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        builder.setMessage("Please enter a valid 5 diget ZipCode")
+                .setTitle("Enter Zipcode")
+                .setView(mZipCodeEditText)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String userZipcode = mZipCodeEditText.getText().toString();
+
+
+                        presenter.getHourlyConditions(userZipcode);
+                        presenter.getCurrentConditions(userZipcode);
+
+
+                    }
+        })
+                .show();
+
+
+
+
+    }
+
+
+
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.getWeather();
+
 
     }
 
@@ -121,11 +141,12 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Override
     public void displayData(CurrentConditions currentConditions) {
-        setCurrentConditionsView(currentConditions);
+
 
     }
 
-    private void setCurrentConditionsView(CurrentConditions currentConditions) {
+    @Override
+    public void setCurentConditions(CurrentConditions currentConditions) {
         int basetemp = 60;
         TextView displayLocation = (TextView) findViewById(R.id.display_location_full);
         TextView tempf = (TextView) findViewById(R.id.temp);

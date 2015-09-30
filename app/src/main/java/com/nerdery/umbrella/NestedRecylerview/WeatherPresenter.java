@@ -1,5 +1,8 @@
 package com.nerdery.umbrella.NestedRecylerview;
 
+import android.util.Log;
+
+import com.nerdery.umbrella.Conditions.model.CurrentConditions;
 import com.nerdery.umbrella.activity.MainActivity;
 import com.nerdery.umbrella.model.CurrentObservation;
 import com.nerdery.umbrella.model.ForecastCondition;
@@ -19,6 +22,8 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class WeatherPresenter {
 
+    final private static String TAG = WeatherPresenter.class.getSimpleName();
+
     final private MainActivity weatherView;
     CompositeSubscription mCompositeSubscription;
 
@@ -28,11 +33,11 @@ public class WeatherPresenter {
         mCompositeSubscription = new CompositeSubscription();
     }
 
-    public void getWeather(){
+    public void getHourlyConditions(String mUserZipcode){
 //        int zipCode = weatherView.getSharedPreferences("UmbrellaPreferences", Context.MODE_PRIVATE).getInt("zipCode", 0xa);
-        int zipCode = 55444;
+        /*int zipCode = 55444;*/
 
-        final Observable<WeatherData> weatherData = WeatherData.getWeatherData(zipCode);
+        final Observable<WeatherData> weatherData = WeatherData.getWeatherData(Integer.parseInt(mUserZipcode));
 
         final Subscription weatherSubscription = weatherData.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(weatherData1 -> {
@@ -44,6 +49,24 @@ public class WeatherPresenter {
                 });
         mCompositeSubscription.add(weatherSubscription);
     }
+
+
+    public void getCurrentConditions(String userZipCode){
+
+            rx.Observable<CurrentConditions> conditionsObservable = CurrentConditions.returnCurrentConditions(userZipCode);
+            conditionsObservable.observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(currentConditions -> {
+                        Log.v(TAG, "successful fetched conditions");
+                        displayCurrentConditions(currentConditions);
+                    }, Throwable::printStackTrace);
+        }
+
+    private void displayCurrentConditions(CurrentConditions currentConditions) {
+        weatherView.setCurentConditions(currentConditions);
+
+    }
+
 
     public void cleanUpResources() {
         mCompositeSubscription.clear();
