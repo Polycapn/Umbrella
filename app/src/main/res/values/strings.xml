@@ -30,5 +30,7 @@
     <string name="pref_units_imperial" translatable="false">imperial</string>
     <!-- Key name for temperature unit preference in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="api_key">c62982ca002f04f1</string>
+    <string name="enter_zipcode">Enter 5 digit ZipCode</string>
+    <string name="enter">Enter</string>
 
 </resources>

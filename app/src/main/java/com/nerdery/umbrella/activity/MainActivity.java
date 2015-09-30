@@ -1,21 +1,28 @@
 package com.nerdery.umbrella.activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nerdery.umbrella.Conditions.model.CurrentConditions;
 import com.nerdery.umbrella.Conditions.presenter.CurrentPresenter;
+import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
 import com.nerdery.umbrella.Conditions.view.IMainView;
 import com.nerdery.umbrella.NestedRecylerview.DailyAdapter;
 import com.nerdery.umbrella.NestedRecylerview.WeatherPresenter;
@@ -27,17 +34,37 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements IMainView {
 
+
+    final public static String ZIP_CODE = "ZipCode";
+    final public static boolean Metric = false;
+
+
     RecyclerView recyclerView;
     WeatherPresenter presenter;
     CurrentPresenter mCurrentPresenter;
     LinearLayout header;
     Toolbar toolbar;
+    UmbrellaApp getContext;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        Boolean isFirstRun = getSharedPreferences("Zipcode", MODE_PRIVATE)
+                .getBoolean("isfirstrun", true);
 
+        if (isFirstRun) {
+//            launch dialogbox and get zipcode
+            InputZipCode inputZipCode = new InputZipCode();
+            inputZipCode.show(getFragmentManager(), "dialog fragment");
+            inputZipCode.setCancelable(false);
+        }
+
+        setContentView(R.layout.activity_main);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         presenter = new WeatherPresenter(this);
@@ -46,14 +73,13 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
 
-
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
         presenter.getWeather();
-        mCurrentPresenter.getData();
 
     }
 
@@ -123,4 +149,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         }
 
     }
+
+
 }
+

@@ -47,6 +47,7 @@ public class SettingsActivity extends PreferenceActivity
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(this);
 
+
         // Trigger the listener immediately with the preference's
         // current value.
         onPreferenceChange(preference,

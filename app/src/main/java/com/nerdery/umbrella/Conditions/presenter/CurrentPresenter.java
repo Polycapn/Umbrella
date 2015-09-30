@@ -20,8 +20,8 @@ public class CurrentPresenter {
 
     }
 
-    public void getData(){
-        rx.Observable<CurrentConditions> conditionsObservable = CurrentConditions.returnCurrentConditions("55428");
+    public void getData(String UserZipcode){
+        rx.Observable<CurrentConditions> conditionsObservable = CurrentConditions.returnCurrentConditions(UserZipcode);
         conditionsObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(currentConditions -> {
