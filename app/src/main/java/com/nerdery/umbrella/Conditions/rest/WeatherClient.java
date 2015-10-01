@@ -1,6 +1,7 @@
 package com.nerdery.umbrella.Conditions.rest;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.nerdery.umbrella.Conditions.model.CurrentConditions;
 import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
@@ -19,6 +20,7 @@ public class WeatherClient {
 
 
     public static final String WEATHER_UNDERGROUND = "http://api.wunderground.com/api";
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     public WeatherClient(Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -31,9 +33,11 @@ public class WeatherClient {
 
     }
 
-    public Observable<CurrentConditions> getCurrentConditions (String mUserZipCode ){
+    public Observable<CurrentConditions> getCurrentConditions (String mZipCode){
+
+
         String wunderGroundKey =  UmbrellaApp.getContext().getApplicationContext().getResources().getString(R.string.api_key);
-        return wunderAPI.getCurrentWeather(wunderGroundKey, mUserZipCode);
+        return wunderAPI.getCurrentWeather(wunderGroundKey, mZipCode);
 
     }
 

@@ -5,5 +5,5 @@
     android:layout_height="wrap_content"
     android:background="@color/primaryColor"
     android:paddingTop="0dp"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    app:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar" />
+    app:layout_collapseMode="pin"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />

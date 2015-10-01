@@ -1,19 +1,26 @@
 package com.nerdery.umbrella.NestedRecylerview;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.nerdery.umbrella.Conditions.model.CurrentConditions;
+import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
+import com.nerdery.umbrella.R;
 import com.nerdery.umbrella.activity.MainActivity;
-import com.nerdery.umbrella.model.CurrentObservation;
+import com.nerdery.umbrella.model.Day;
+import com.nerdery.umbrella.model.DayConditions;
 import com.nerdery.umbrella.model.ForecastCondition;
 import com.nerdery.umbrella.model.WeatherData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -23,47 +30,104 @@ import rx.subscriptions.CompositeSubscription;
 public class WeatherPresenter {
 
     final private static String TAG = WeatherPresenter.class.getSimpleName();
+    private boolean metricMode = false;
 
-    final private MainActivity weatherView;
+    private MainActivity weatherView;
     CompositeSubscription mCompositeSubscription;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
+    private String mZipcode;
+    private SharedPreferences preferences;
 
 
     public WeatherPresenter(MainActivity weatherView) {
         this.weatherView = weatherView;
         mCompositeSubscription = new CompositeSubscription();
+        preferences = UmbrellaApp.getContext().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
+
     }
 
-    public void getHourlyConditions(String mUserZipcode){
-//        int zipCode = weatherView.getSharedPreferences("UmbrellaPreferences", Context.MODE_PRIVATE).getInt("zipCode", 0xa);
-        /*int zipCode = 55444;*/
+    public void getWeather(){
+        getCurrentConditions();
+    }
 
-        final Observable<WeatherData> weatherData = WeatherData.getWeatherData(Integer.parseInt(mUserZipcode));
+    public void getHourlyConditions() {
+         Observable<WeatherData> weatherData = WeatherData.getWeatherData(Integer.parseInt(mZipcode));
 
-        final Subscription weatherSubscription = weatherData.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+         Subscription hourlySub = weatherData.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(weatherData1 -> {
-                    CurrentObservation currentConditions = weatherData1.currentObservation;
                     List<ForecastCondition> hourlyConditions = weatherData1.forecast;
-                    weatherView.setList(hourlyConditions);
+                    long yday = 0;
+                    List<Day> days = new ArrayList<>();
+                    for(ForecastCondition hourlyCon : hourlyConditions){
+                        if(yday<hourlyCon.yday){
+                            yday = hourlyCon.yday;
+                            Day day = new Day();
+                            day.dayName = hourlyCon.day;
+                            day.yday = hourlyCon.yday;
+                            day.conditions = new ArrayList<>();
+                            setDayConditions(hourlyConditions, yday, day);
+                            days.add(day);
+                        }
+                    }
+                    weatherView.setList(days, metricMode);
                 }, throwable -> {
 
                 });
-        mCompositeSubscription.add(weatherSubscription);
+        mCompositeSubscription.add(hourlySub);
+    }
+
+    private void setDayConditions(List<ForecastCondition> hourlyConditions, long yday, Day day) {
+        for(int i=0; i<hourlyConditions.size(); i++){
+            ForecastCondition forecastCondition = hourlyConditions.get(i);
+            if(forecastCondition.yday == yday) {
+                DayConditions dayConditions = new DayConditions();
+                dayConditions.condition = forecastCondition.condition;
+                dayConditions.tempC = Math.round(forecastCondition.tempCelsius);
+                dayConditions.tempF = Math.round(forecastCondition.tempFahrenheit);
+                dayConditions.time = forecastCondition.displayTime;
+                day.conditions.add(dayConditions);
+            }
+            if(day.conditions.size()==8){
+                break;
+            }
+        }
     }
 
 
-    public void getCurrentConditions(String userZipCode){
+    public void getCurrentConditions() {
+        getPreferences();
 
-            rx.Observable<CurrentConditions> conditionsObservable = CurrentConditions.returnCurrentConditions(userZipCode);
-            conditionsObservable.observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(currentConditions -> {
-                        Log.v(TAG, "successful fetched conditions");
-                        displayCurrentConditions(currentConditions);
-                    }, Throwable::printStackTrace);
+        Log.v(TAG,"ZipCode is "+mZipcode);
+        //if zipcode is empty, prompt user for zipcode
+        if (TextUtils.isEmpty(mZipcode)) {
+            weatherView.getUserZipcode();
+            return;
         }
 
+        rx.Observable<CurrentConditions> conditionsObservable = CurrentConditions.returnCurrentConditions(mZipcode);
+        Subscription conditionSub = conditionsObservable.observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(currentConditions -> {
+                    Log.v(TAG, "successful fetched conditions");
+                    if(currentConditions.getCurrentObservation()!=null){
+                        displayCurrentConditions(currentConditions);
+                    }else{
+                        Toast.makeText(weatherView,"Location not found",Toast.LENGTH_SHORT).show();
+                        weatherView.getUserZipcode();
+                        return;
+                    }
+                    getHourlyConditions();
+                }, Throwable::printStackTrace);
+        mCompositeSubscription.add(conditionSub);
+    }
+
+    private void getPreferences() {
+        mZipcode = preferences.getString(weatherView.getString(R.string.pref_location_key), "");
+        metricMode = preferences.getString(weatherView.getString(R.string.pref_units_key), "english").equalsIgnoreCase(("metric"));
+    }
+
     private void displayCurrentConditions(CurrentConditions currentConditions) {
-        weatherView.setCurentConditions(currentConditions);
+        weatherView.setCurentConditions(currentConditions,metricMode);
 
     }
 

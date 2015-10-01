@@ -8,5 +8,5 @@ import com.nerdery.umbrella.Conditions.model.CurrentConditions;
 public interface IMainView {
     void displayData(CurrentConditions currentConditions);
 
-    void setCurentConditions(CurrentConditions currentConditions);
+    void setCurentConditions(CurrentConditions currentConditions, boolean metricMode);
 }

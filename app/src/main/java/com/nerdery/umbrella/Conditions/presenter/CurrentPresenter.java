@@ -1,8 +1,10 @@
 package com.nerdery.umbrella.Conditions.presenter;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.nerdery.umbrella.Conditions.model.CurrentConditions;
+import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
 import com.nerdery.umbrella.Conditions.view.IMainView;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -12,6 +14,8 @@ import rx.schedulers.Schedulers;
  * Created by Polycap on 9/27/2015.
  */
 public class CurrentPresenter {
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
+
     private static final String TAG = CurrentPresenter.class.getSimpleName();
     IMainView view;
 
@@ -20,8 +24,12 @@ public class CurrentPresenter {
 
     }
 
-    public void getData(String UserZipcode){
-        rx.Observable<CurrentConditions> conditionsObservable = CurrentConditions.returnCurrentConditions(UserZipcode);
+    public void getData(){
+
+        SharedPreferences preferences = UmbrellaApp.getContext().getSharedPreferences(MY_PREFS_NAME, UmbrellaApp.getContext().MODE_PRIVATE);
+        String mZipcode = preferences.getString("UserZipCode", null);
+
+        rx.Observable<CurrentConditions> conditionsObservable = CurrentConditions.returnCurrentConditions(mZipcode);
         conditionsObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(currentConditions -> {

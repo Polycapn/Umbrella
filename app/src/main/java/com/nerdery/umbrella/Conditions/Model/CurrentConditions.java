@@ -1,5 +1,7 @@
 package com.nerdery.umbrella.Conditions.model;
 
+import android.content.SharedPreferences;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.nerdery.umbrella.Conditions.rest.WeatherClient;
@@ -1827,8 +1829,8 @@ public class CurrentConditions {
 
     }
 
-    static public Observable<CurrentConditions> returnCurrentConditions( String mUserZipCode){
+    static public Observable<CurrentConditions> returnCurrentConditions(String mZipCode ){
         WeatherClient mWeatherClient = new WeatherClient(UmbrellaApp.getContext());
-        return mWeatherClient.getCurrentConditions(mUserZipCode);
+        return mWeatherClient.getCurrentConditions(mZipCode);
     }
 }

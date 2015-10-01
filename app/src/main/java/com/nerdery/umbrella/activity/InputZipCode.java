@@ -47,7 +47,7 @@ public class InputZipCode extends DialogFragment  {
 
                     String usersZipcode = editZipCode.getText().toString();
                     sZipcode = this.getActivity().getSharedPreferences(usersZipcode, Context.MODE_PRIVATE);
-                    mCurrentPresenter.getData(usersZipcode);
+                    mCurrentPresenter.getData();
 
                 });
         return builder.create();

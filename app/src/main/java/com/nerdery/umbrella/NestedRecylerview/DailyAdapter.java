@@ -10,13 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nerdery.umbrella.R;
+import com.nerdery.umbrella.model.Day;
+import com.nerdery.umbrella.model.DayConditions;
 import com.nerdery.umbrella.model.ForecastCondition;
 import com.nerdery.umbrella.widget.DynamicGridLayoutManager;
-import com.poliveira.parallaxrecyclerview.ParallaxRecyclerAdapter;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
 
 /**
  * Created by Polycap on 9/27/2015.
@@ -33,17 +34,18 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.DailyViewHol
     private static final String RAIN = "Rain";
     private static final String SUNNY = "Runny";
     private static final String SNOW = "Snow";
+    private static final String OVERCAST = "Overcast";
 
 
     private static final String TAG = DailyAdapter.class.getSimpleName();
-    private List<ForecastCondition> hourlyConditions;
-    private int currentIndex;
+    private List<Day> dayConditions;
     private Context context;
+    private boolean metricMode;
+    private Long intialDay = 0L;
 
-    public DailyAdapter(List<ForecastCondition> hourlyConditions) {
-        this.hourlyConditions = hourlyConditions;
-        currentIndex = 0;
-        Log.v(TAG, "hourly conditions size: " + hourlyConditions.size());
+    public DailyAdapter(List<Day> dayConditions) {
+        this.dayConditions = dayConditions;
+        Log.v(TAG, "hourly conditions size: " + dayConditions.size());
     }
 
     @Override
@@ -64,36 +66,41 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.DailyViewHol
     @Override
     public void onBindViewHolder(DailyViewHolder holder, int position) {
 
-        if (hourlyConditions.size() > (currentIndex)) {
-            ForecastCondition hourCondition = hourlyConditions.get(currentIndex);
-            holder.day.setText(hourCondition.day);
-            int hld = 24 - hourCondition.hour;
-            hld = (hld < 8) ? (24 - hourCondition.hour) : 8;
+        if (dayConditions.size() > position) {
+            if(intialDay == 0L)
+            intialDay = dayConditions.get(position).yday;
+            Day day = dayConditions.get(position);
+            String dayName = day.dayName;
 
-            Log.v(TAG,"");
-
-            List<ForecastCondition> dayBlock = new ArrayList<>();
-
-            for (int i = 0; i < hld; i++) {
-                if (hourlyConditions.size() > (currentIndex + i))
-                    dayBlock.add(hourlyConditions.get(currentIndex + i));
+            if(intialDay.equals(dayConditions.get(position).yday)){
+                dayName = "Today";
+            }else if((intialDay+1L) == (dayConditions.get(position).yday)){
+                dayName = "Tomorrow";
             }
+            holder.day.setText(dayName);
+            holder.forecastBlock.setLayoutManager(new DynamicGridLayoutManager(context, 4));
+            HourlyAdapter adapter = new HourlyAdapter(day.conditions);
+            adapter.setHasStableIds(true);
+            holder.forecastBlock.setAdapter(adapter);
 
-        Log.v(TAG,"day = "+hourlyConditions.get(position).day);
-            if (dayBlock.size() > 0) {
-                holder.forecastBlock.setLayoutManager(new DynamicGridLayoutManager(context, 4));
-                HourlyAdapter adapter = new HourlyAdapter(dayBlock);
-                holder.forecastBlock.setAdapter(adapter);
-            }
-            currentIndex = (currentIndex == 0) ? hld : currentIndex + 24;
-            Log.v(TAG, "final index:" + currentIndex);
         }
 
     }
 
     @Override
+    public long getItemId(int position) {
+        return dayConditions.get(position).yday;
+    }
+
+
+
+    @Override
     public int getItemCount() {
-        return 7;
+        return dayConditions.size();
+    }
+
+    public void setMetricMode(boolean metricMode) {
+        this.metricMode = metricMode;
     }
 
     public class DailyViewHolder extends RecyclerView.ViewHolder {
@@ -108,10 +115,15 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.DailyViewHol
     }
 
     private class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.BlockViewHolder> {
-        private List<ForecastCondition> dayBlock;
+        private List<DayConditions> conditions;
 
-        public HourlyAdapter(List<ForecastCondition> dayBlock) {
-            this.dayBlock = dayBlock;
+        public HourlyAdapter(List<DayConditions> conditions) {
+            this.conditions = conditions;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return conditions.get(position).hashCode();
         }
 
         @Override
@@ -122,83 +134,31 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.DailyViewHol
 
         @Override
         public void onBindViewHolder(BlockViewHolder holder, int position) {
-            holder.temp.setText("" + (int) dayBlock.get(position).tempFahrenheit);
-            holder.timeofday.setText(dayBlock.get(position).displayTime);
-            String mCondition = dayBlock.get(position).condition;
-            Log.v(TAG, "Condition: "+mCondition);
+            String degreeSign = String.valueOf((char) 0x00B0);
 
-            switch (mCondition) {
-                case CLEAR:
-                    Picasso.with(context).load(IconEndpoint + "clear.png").placeholder(R.drawable.clear)
-                            .into(holder.weatherIcon);
-                    break;
-                case CLOUDY:
-                    Picasso.with(context).load(IconEndpoint + "cloudy.png").placeholder(R.drawable.cloudy)
-                            .into(holder.weatherIcon);
-                    break;
-                case PARTLYCLOUDY:
-                    Picasso.with(context).load(IconEndpoint + "partlycloudy.png").placeholder(R.drawable.partlycloudy)
-                            .into(holder.weatherIcon);
-                    break;
-                case MOSTLYCLOUDY:
-                    Picasso.with(context).load(IconEndpoint + "mostlycloudy.png").placeholder(R.drawable.mostlycloudy)
-                            .into(holder.weatherIcon);
-                    break;
-                case HAZY:
-                    Picasso.with(context).load(IconEndpoint + "hazy.png").placeholder(R.drawable.haze)
-                            .into(holder.weatherIcon);
-                    break;
-                case RAIN:
-                    Picasso.with(context).load(IconEndpoint + "rain.png").placeholder(R.drawable.rain)
-                            .into(holder.weatherIcon);
-                    break;
-                case SNOW:
-                    Picasso.with(context).load(IconEndpoint + "snow.png").placeholder(R.drawable.snow)
-                            .into(holder.weatherIcon);
-                    break;
-                case SUNNY:
-                    Picasso.with(context).load(IconEndpoint + "sunny.png").placeholder(R.drawable.sunny)
-                            .into(holder.weatherIcon);
-                    break;
-                case PARTLYSUNNY:
-                    Picasso.with(context).load(IconEndpoint + "partlysunny.png").placeholder(R.drawable.partlysunny)
-                            .into(holder.weatherIcon);
-                    break;
-//                case PARTLYCLOUDY:
-//                    Picasso.with(context).load(IconEndpoint + "partlycloudy.png").placeholder(R.drawable.partlycloudy)
-//                            .into(holder.weatherIcon);
-//                    break;
-//                case PARTLYCLOUDY:
-//                    Picasso.with(context).load(IconEndpoint + "partlycloudy.png").placeholder(R.drawable.partlycloudy)
-//                            .into(holder.weatherIcon);
-//                    break;
-//                case PARTLYCLOUDY:
-//                    Picasso.with(context).load(IconEndpoint + "partlycloudy.png").placeholder(R.drawable.partlycloudy)
-//                            .into(holder.weatherIcon);
-//                    break;
-//                case PARTLYCLOUDY:
-//                    Picasso.with(context).load(IconEndpoint + "partlycloudy.png").placeholder(R.drawable.partlycloudy)
-//                            .into(holder.weatherIcon);
-//                    break;
-//                case PARTLYCLOUDY:
-//                    Picasso.with(context).load(IconEndpoint + "partlycloudy.png").placeholder(R.drawable.partlycloudy)
-//                            .into(holder.weatherIcon);
-//                    break;
-//                case PARTLYCLOUDY:
-//                    Picasso.with(context).load(IconEndpoint + "partlycloudy.png").placeholder(R.drawable.partlycloudy)
-//                            .into(holder.weatherIcon);
-//                    break;
-//                case PARTLYCLOUDY:
-//                    Picasso.with(context).load(IconEndpoint + "partlycloudy.png").placeholder(R.drawable.partlycloudy)
-//                            .into(holder.weatherIcon);
-//                    break;
-
+            if(!metricMode) {
+                String fahrenheightDegrees = String.valueOf(conditions.get(position).tempF);
+                holder.temp.setText(fahrenheightDegrees+degreeSign);
             }
+            else {
+                String celciusDegrees = String.valueOf(conditions.get(position).tempC);
+                holder.temp.setText(celciusDegrees+degreeSign);
+            }
+
+            holder.timeofday.setText(conditions.get(position).time);
+            String mCondition = conditions.get(position).condition;
+            Log.v(TAG, "Condition: "+mCondition);
+            mCondition = mCondition.toLowerCase().replace(" ","");
+
+            Picasso.with(context)
+                    .load(IconEndpoint + mCondition + ".png")
+                    .placeholder(R.drawable.clear)
+                            .into(holder.weatherIcon);
         }
 
         @Override
         public int getItemCount() {
-            return dayBlock.size();
+            return conditions.size();
         }
 
         public class BlockViewHolder extends RecyclerView.ViewHolder {
@@ -211,8 +171,6 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.DailyViewHol
                 temp = (TextView) itemView.findViewById(R.id.temperature_content);
                 timeofday = (TextView) itemView.findViewById(R.id.timeof_day);
                 weatherIcon = (ImageView) itemView.findViewById(R.id.weather_icon);
-
-
             }
         }
     }
