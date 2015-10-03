@@ -1,5 +1,7 @@
 package com.nerdery.umbrella.activity;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
@@ -52,11 +54,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     WeatherPresenter presenter;
     CurrentPresenter mCurrentPresenter;
     Toolbar toolbar;
-    UmbrellaApp getContext;
     ProgressDialog progressDialog;
     private SharedPreferences prefs;
-    //    SwipeRefreshLayout mSwipeRefreshLayout;
-//    TextView displayLocation;
     private CollapsingToolbarLayout collapsingToolbar;
 
 
@@ -73,15 +72,10 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         progressDialog.setTitle("Fetching Weather Updates");
         prefs = getSharedPreferences(UMBRELLA_PREFERENCES, MODE_PRIVATE);
 
-//        public abstract void setStatusBarColor (int color)
-
-
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         presenter = new WeatherPresenter(this);
         mCurrentPresenter = new CurrentPresenter(this);
-//        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.weather_swipe_refresh);
-//        mSwipeRefreshLayout.setOnRefreshListener(this.presenter::getWeather);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -101,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public void getUserZipcode() {
         final EditText mZipCodeEditText = new EditText(this);
         mZipCodeEditText.setInputType(InputType.TYPE_CLASS_PHONE);
-        mZipCodeEditText.setRawInputType(InputType.TYPE_CLASS_NUMBER );
+        mZipCodeEditText.setRawInputType(InputType.TYPE_CLASS_NUMBER);
         int maxLength = 5;
         InputFilter[] fArray = new InputFilter[1];
         fArray[0] = new InputFilter.LengthFilter(maxLength);
@@ -128,18 +122,15 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
 
-
-
-
     @Override
     protected void onResume() {
         super.onResume();
-        Log.v(TAG,"On Resume");
+        Log.v(TAG, "On Resume");
 
-        if (prefs.getBoolean("firstrun", true)){
+        if (prefs.getBoolean("firstrun", true)) {
             getUserZipcode();
             prefs.edit().putBoolean("firstrun", false).apply();
-        }else {
+        } else {
             showProgress();
             presenter.getWeather();
         }
@@ -151,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         adapter.setMetricMode(metricMode);
         adapter.setHasStableIds(true);
         recyclerView.setAdapter(adapter);
-//        mSwipeRefreshLayout.setRefreshing(false);
         dismissProgress();
     }
 
@@ -177,14 +167,14 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Log.v(TAG,"Action Settings clicked");
+            Log.v(TAG, "Action Settings clicked");
             Fragment settingsFragment = getFragmentManager().findFragmentByTag(SETTINGS);
-            if(settingsFragment==null) {
+            if (settingsFragment == null) {
                 getFragmentManager().beginTransaction()
                         .replace(android.R.id.content, new PreferenceFragment())
                         .addToBackStack(SETTINGS)
                         .commit();
-            }else{
+            } else {
                 getFragmentManager().beginTransaction()
                         .show(settingsFragment)
                         .commit();
@@ -204,24 +194,21 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     @Override
     public void setCurentConditions(CurrentConditions currentConditions, boolean metricMode) {
         //TODO convert to celcius as well depending on the value of metricMode
-//        displayLocation = (TextView) findViewById(R.id.display_location_full);
         TextView tempf = (TextView) findViewById(R.id.temp);
         TextView weather = (TextView) findViewById(R.id.weather);
 
-//        displayLocation.setText(currentConditions.getCurrentObservation().getDisplayLocation().getFull());
         collapsingToolbar.setTitle(currentConditions.getCurrentObservation().getDisplayLocation().getFull());
         collapsingToolbar.setCollapsedTitleTextAppearance(R.style.collapsedToolBar);
         collapsingToolbar.setExpandedTitleTextAppearance(R.style.expandedToolBar);
-
-
+        Activity activity = getParent();
         int temp;
         int basetemp = 60;
 
-        if(metricMode) {
-            basetemp = ((5*(60-32))/(9));
-            Log.v(TAG,"basetemp metric: "+basetemp);
+        if (metricMode) {
+            basetemp = ((5 * (60 - 32)) / (9));
+            Log.v(TAG, "basetemp metric: " + basetemp);
             temp = Math.round(currentConditions.getCurrentObservation().getTempC());
-        }else {
+        } else {
             temp = Math.round(currentConditions.getCurrentObservation().getTempF());
         }
 
@@ -231,26 +218,35 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         weather.setText(currentConditions.getCurrentObservation().getWeather());
 
-        if (temp > basetemp) {
-            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.weather_warm));
-            collapsingToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.weather_warm));
 
-        } else {
-            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.weather_cool));
-            collapsingToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.weather_cool));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.BLUE);
 
+            if (temp > basetemp) {
+                toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.weather_warm));
+                collapsingToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.weather_warm));
+                window.setStatusBarColor(getResources().getColor(R.color.weather_warmDark));
+
+
+            } else {
+                toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.weather_cool));
+                collapsingToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.weather_cool));
+                window.setStatusBarColor(getResources().getColor(R.color.weather_coolDark));
+
+            }
         }
-
 
     }
 
     @Override
     public void onBackPressed() {
-        if(getFragmentManager().getBackStackEntryCount()>0){
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
             showProgress();
             presenter.getWeather();
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
