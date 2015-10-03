@@ -1,4 +1,4 @@
-package com.nerdery.umbrella.activity;
+package com.nerdery.umbrella.views;
 
 /**
  * Created by Polycap on 9/27/2015.

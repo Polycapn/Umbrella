@@ -1,4 +1,4 @@
-package com.nerdery.umbrella.NestedRecylerview;
+package com.nerdery.umbrella.presenters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,14 +6,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.nerdery.umbrella.Conditions.model.CurrentConditions;
-import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
 import com.nerdery.umbrella.R;
-import com.nerdery.umbrella.activity.MainActivity;
-import com.nerdery.umbrella.model.Day;
-import com.nerdery.umbrella.model.DayConditions;
-import com.nerdery.umbrella.model.ForecastCondition;
-import com.nerdery.umbrella.model.WeatherData;
+import com.nerdery.umbrella.models.CurrentConditions;
+import com.nerdery.umbrella.models.Day;
+import com.nerdery.umbrella.models.DayConditions;
+import com.nerdery.umbrella.models.ForecastCondition;
+import com.nerdery.umbrella.models.UmbrellaApp;
+import com.nerdery.umbrella.models.WeatherData;
+import com.nerdery.umbrella.views.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +29,11 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class WeatherPresenter {
 
-    final private static String TAG = WeatherPresenter.class.getSimpleName();
-    private boolean metricMode = false;
-
-    private MainActivity weatherView;
-    CompositeSubscription mCompositeSubscription;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
+    final private static String TAG = WeatherPresenter.class.getSimpleName();
+    CompositeSubscription mCompositeSubscription;
+    private boolean metricMode = false;
+    private MainActivity weatherView;
     private String mZipcode;
     private SharedPreferences preferences;
 

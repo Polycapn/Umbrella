@@ -1,7 +1,7 @@
-package com.nerdery.umbrella.api;
+package com.nerdery.umbrella.networking.api;
 
 import com.nerdery.umbrella.BuildConfig;
-import com.nerdery.umbrella.model.WeatherData;
+import com.nerdery.umbrella.models.WeatherData;
 
 import retrofit.http.GET;
 import retrofit.http.Path;

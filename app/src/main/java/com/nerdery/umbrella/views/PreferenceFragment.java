@@ -1,12 +1,9 @@
-package com.nerdery.umbrella.activity;
+package com.nerdery.umbrella.views;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.nerdery.umbrella.NestedRecylerview.WeatherPresenter;
+import com.nerdery.umbrella.presenters.WeatherPresenter;
 import com.nerdery.umbrella.R;
 
 /**

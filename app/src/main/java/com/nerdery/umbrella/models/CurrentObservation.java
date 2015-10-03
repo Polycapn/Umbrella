@@ -1,4 +1,4 @@
-package com.nerdery.umbrella.model;
+package com.nerdery.umbrella.models;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,4 +1,4 @@
-package com.nerdery.umbrella.NestedRecylerview;
+package com.nerdery.umbrella.views;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,14 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nerdery.umbrella.R;
-import com.nerdery.umbrella.model.Day;
-import com.nerdery.umbrella.model.DayConditions;
-import com.nerdery.umbrella.model.ForecastCondition;
-import com.nerdery.umbrella.widget.DynamicGridLayoutManager;
+import com.nerdery.umbrella.models.Day;
+import com.nerdery.umbrella.models.DayConditions;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.concurrent.locks.Condition;
 
 /**
  * Created by Polycap on 9/27/2015.

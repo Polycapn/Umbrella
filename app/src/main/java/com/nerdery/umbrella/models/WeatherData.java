@@ -1,7 +1,7 @@
-package com.nerdery.umbrella.model;
+package com.nerdery.umbrella.models;
 
 import com.google.gson.annotations.SerializedName;
-import com.nerdery.umbrella.api.ApiManager;
+import com.nerdery.umbrella.networking.api.ApiManager;
 
 import java.util.List;
 

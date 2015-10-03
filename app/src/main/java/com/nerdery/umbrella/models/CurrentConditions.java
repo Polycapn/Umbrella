@@ -1,11 +1,8 @@
-package com.nerdery.umbrella.Conditions.model;
-
-import android.content.SharedPreferences;
+package com.nerdery.umbrella.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.nerdery.umbrella.Conditions.rest.WeatherClient;
-import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
+import com.nerdery.umbrella.networking.api.WeatherClient;
 
 import rx.Observable;
 

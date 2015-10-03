@@ -1,6 +1,6 @@
-package com.nerdery.umbrella.Conditions.view;
+package com.nerdery.umbrella.views;
 
-import com.nerdery.umbrella.Conditions.model.CurrentConditions;
+import com.nerdery.umbrella.models.CurrentConditions;
 
 /**
  * Created by Polycap on 9/27/2015.

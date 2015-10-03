@@ -1,4 +1,4 @@
-package com.nerdery.umbrella.widget;
+package com.nerdery.umbrella.views;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
