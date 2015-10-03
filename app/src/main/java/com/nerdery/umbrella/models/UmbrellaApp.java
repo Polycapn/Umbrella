@@ -1,4 +1,4 @@
-package com.nerdery.umbrella.Conditions.util;
+package com.nerdery.umbrella.models;
 
 import android.app.Application;
 import android.content.Context;

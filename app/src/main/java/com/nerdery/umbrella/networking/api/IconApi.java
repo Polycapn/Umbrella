@@ -1,4 +1,6 @@
-package com.nerdery.umbrella.api;
+package com.nerdery.umbrella.networking.api;
+
+import com.nerdery.umbrella.models.CurrentObservation;
 
 /**
  * API for getting custom Nerdery icon URLs for weather conditions
@@ -15,7 +17,7 @@ public class IconApi {
     /**
      * Get the URL to an icon suitable for use as a replacement for the icons given by Weather Underground
      * @param icon The name of the icon provided by Weather Underground (e.g. "clear").
-     *      {@see {@link com.nerdery.umbrella.model.CurrentObservation#icon}}
+     *      {@see {@link CurrentObservation#icon}}
      * @param highlighted True to get the highlighted version, false to get the outline version
      * @return A URL to an icon
      */

@@ -1,4 +1,4 @@
-package com.nerdery.umbrella.model;
+package com.nerdery.umbrella.models;
 
 /**
  * Created by Polycap on 10/1/2015.

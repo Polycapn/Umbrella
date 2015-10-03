@@ -1,10 +1,10 @@
-package com.nerdery.umbrella.api;
+package com.nerdery.umbrella.networking.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nerdery.umbrella.BuildConfig;
-import com.nerdery.umbrella.api.parser.ForecastParser;
-import com.nerdery.umbrella.model.ForecastCondition;
+import com.nerdery.umbrella.networking.parser.ForecastParser;
+import com.nerdery.umbrella.models.ForecastCondition;
 
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;

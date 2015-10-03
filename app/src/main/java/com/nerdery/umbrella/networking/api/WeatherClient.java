@@ -1,10 +1,10 @@
-package com.nerdery.umbrella.Conditions.rest;
+package com.nerdery.umbrella.networking.api;
 
 import android.content.Context;
 
-import com.nerdery.umbrella.model.CurrentConditions;
-import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
 import com.nerdery.umbrella.R;
+import com.nerdery.umbrella.models.CurrentConditions;
+import com.nerdery.umbrella.models.UmbrellaApp;
 
 import retrofit.RestAdapter;
 import retrofit.http.GET;

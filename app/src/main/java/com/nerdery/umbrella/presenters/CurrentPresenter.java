@@ -1,12 +1,12 @@
-package com.nerdery.umbrella.Conditions.presenter;
+package com.nerdery.umbrella.presenters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
-import com.nerdery.umbrella.Conditions.view.IMainView;
-import com.nerdery.umbrella.model.CurrentConditions;
+import com.nerdery.umbrella.models.CurrentConditions;
+import com.nerdery.umbrella.models.UmbrellaApp;
+import com.nerdery.umbrella.views.IMainView;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
