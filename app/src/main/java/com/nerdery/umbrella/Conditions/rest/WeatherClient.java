@@ -1,8 +1,9 @@
 package com.nerdery.umbrella.Conditions.rest;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
-import com.nerdery.umbrella.model.CurrentConditions;
+import com.nerdery.umbrella.Conditions.model.CurrentConditions;
 import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
 import com.nerdery.umbrella.R;
 
@@ -15,9 +16,11 @@ import rx.Observable;
  * Created by Polycap on 9/27/2015.
  */
 public class WeatherClient {
+    private WeatherAPI wunderAPI;
+
+
     public static final String WEATHER_UNDERGROUND = "http://api.wunderground.com/api";
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-    private WeatherAPI wunderAPI;
 
     public WeatherClient(Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()

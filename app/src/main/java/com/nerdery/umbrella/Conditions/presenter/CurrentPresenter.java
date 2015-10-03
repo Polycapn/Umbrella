@@ -1,12 +1,11 @@
 package com.nerdery.umbrella.Conditions.presenter;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.nerdery.umbrella.Conditions.model.CurrentConditions;
 import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
 import com.nerdery.umbrella.Conditions.view.IMainView;
-import com.nerdery.umbrella.model.CurrentConditions;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -27,7 +26,7 @@ public class CurrentPresenter {
 
     public void getData(){
 
-        SharedPreferences preferences = UmbrellaApp.getContext().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences preferences = UmbrellaApp.getContext().getSharedPreferences(MY_PREFS_NAME, UmbrellaApp.getContext().MODE_PRIVATE);
         String mZipcode = preferences.getString("UserZipCode", null);
 
         rx.Observable<CurrentConditions> conditionsObservable = CurrentConditions.returnCurrentConditions(mZipcode);

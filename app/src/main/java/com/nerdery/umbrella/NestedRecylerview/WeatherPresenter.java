@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.nerdery.umbrella.model.CurrentConditions;
+import com.nerdery.umbrella.Conditions.model.CurrentConditions;
 import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
 import com.nerdery.umbrella.R;
 import com.nerdery.umbrella.activity.MainActivity;
@@ -29,11 +29,12 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class WeatherPresenter {
 
-    public static final String MY_PREFS_NAME = "MyPrefsFile";
     final private static String TAG = WeatherPresenter.class.getSimpleName();
-    CompositeSubscription mCompositeSubscription;
     private boolean metricMode = false;
+
     private MainActivity weatherView;
+    CompositeSubscription mCompositeSubscription;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
     private String mZipcode;
     private SharedPreferences preferences;
 

@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 
+import com.nerdery.umbrella.Conditions.model.CurrentConditions;
 import com.nerdery.umbrella.Conditions.presenter.CurrentPresenter;
 import com.nerdery.umbrella.Conditions.util.UmbrellaApp;
 import com.nerdery.umbrella.R;
@@ -21,11 +22,11 @@ import com.nerdery.umbrella.R;
  */
 public class InputZipCode extends DialogFragment  {
 
+    private SharedPreferences sZipcode;
+    private EditText editZipCode;
     String mZipcode;
     UmbrellaApp getContext;
     CurrentPresenter mCurrentPresenter;
-    private SharedPreferences sZipcode;
-    private EditText editZipCode;
 
     @Override
     public void onAttach(Activity activity) {
